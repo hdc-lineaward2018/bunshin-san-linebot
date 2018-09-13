@@ -1,0 +1,39 @@
+{
+  "name": "bunshin-san-linebot",
+  "version": "0.0.1",
+  "description": "This is LINE bot server which is a part of Bunshin-san.",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm run build",
+    "start": "npm run serve",
+    "serve": "node ./dist/index.js",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hdc-lineaward2018/bunshin-san-linebot.git"
+  },
+  "keywords": [
+    "LINE",
+    "LINE BOT"
+  ],
+  "author": "april418@hdc-lineaward2018",
+  "license": "No License",
+  "bugs": {
+    "url": "https://github.com/hdc-lineaward2018/bunshin-san-linebot/issues"
+  },
+  "homepage": "https://github.com/hdc-lineaward2018/bunshin-san-linebot#readme",
+  "devDependencies": {
+    "@types/express": "^4.16.0",
+    "ngrok": "^3.0.1",
+    "ts-loader": "^5.0.0",
+    "typescript": "^3.0.3",
+    "webpack": "^4.17.2",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "@line/bot-sdk": "^6.2.1",
+    "express": "^4.16.3",
+    "log4js": "^3.0.5"
+  }
+}
