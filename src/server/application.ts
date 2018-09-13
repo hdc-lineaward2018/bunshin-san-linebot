@@ -13,15 +13,16 @@ app.use('/', index)
 
 app.listen(port, () => {
   logger.info(`Application server listening on port ${port}!`)
-  if(process.env.NODE_ENV !== 'development') return
 
-  connect(
-    Object.assign({addr: port}, config)
-  ).then((url: string) => {
-    logger.info(`Connecting to ngrok on ${url}`)
-  }).catch((error: Error) => {
-    logger.error(`${error.name}: ${error.message}`)
-  })
+  if(process.env.NODE_ENV == 'development') {
+    connect(
+      Object.assign({addr: port}, config)
+    ).then((url: string) => {
+      logger.info(`Connecting to ngrok on ${url}`)
+    }).catch((error: Error) => {
+      logger.error(`${error.name}: ${error.message}`)
+    })
+  }
 })
 
 app.on('error', (app: Application) => {
