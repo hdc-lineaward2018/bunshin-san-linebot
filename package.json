@@ -4,7 +4,7 @@
   "description": "This is LINE bot server which is a part of Bunshin-san.",
   "main": "index.js",
   "scripts": {
-    "prestart": "npm run build",
+    "postinstall": "npm run build",
     "start": "npm run serve",
     "serve": "node ./dist/index.js",
     "build": "webpack"
