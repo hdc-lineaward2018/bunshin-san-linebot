@@ -65,3 +65,6 @@ typings/
 
 # Compiled source directory
 dist
+
+# forked Ngrok directory
+!node_modules/ngrok

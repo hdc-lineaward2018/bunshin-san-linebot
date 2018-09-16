@@ -1,5 +1,11 @@
 const { resolve } = require('path')
-const mode = process.env.NODE_ENV === 'development' ? 'development' : 'production'
+const MODES = {
+  production: 'production',
+  staging: 'production',
+  development: 'development'
+}
+const mode = Object.keys(MODES).includes(process.env.NODE_ENV) ?
+  MODES[process.env.NODE_ENV] : 'none'
 
 module.exports = {
   mode: mode,
