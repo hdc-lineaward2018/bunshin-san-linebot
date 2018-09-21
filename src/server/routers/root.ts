@@ -1,80 +1,50 @@
 import { Router, Request, Response } from 'express'
-import { EventBase, ReplyableEvent, FlexMessage } from '@line/bot-sdk'
+import { EventBase, WebhookEvent, ReplyableEvent, PostbackEvent, MessageEvent } from '@line/bot-sdk'
+import { generateGeneralMenu } from '../bunshin-san/messages'
 import client from '../linebot/client'
 import middleware from '../linebot/middleware'
+import logger from '../logger'
+import Database from '../bunshin-san/database'
+import { User } from '../bunshin-san/models'
 
 const hasEvents = (request: Request) : boolean => {
   return request.body && request.body.events && request.body.events.length > 0
 }
-
 const isReplyable = (event: EventBase) : event is ReplyableEvent => {
   return !!(<ReplyableEvent>event).replyToken
 }
-
-const generateMenuMessage = () : FlexMessage => {
-  return {
-    type: 'flex',
-    altText: '指令の書',
-    contents: {
-      type: 'bubble',
-      header: {
-        type: 'box',
-        layout: 'vertical',
-        contents: [
-          {
-            type: 'text',
-            text: '指令の書'
-          }
-        ]
-      },
-      footer: {
-        type: 'box',
-        layout: 'vertical',
-        contents: [
-          {
-            type: 'button',
-            action: {
-              type: 'message',
-              label: '現在の巻物を見る',
-              text: '現在の巻物を見る'
-            }
-          },
-          {
-            type: 'button',
-            action: {
-              type: 'message',
-              label: '新しい巻物',
-              text: '新しい巻物'
-            }
-          },
-          {
-            type: 'button',
-            action: {
-              type: 'message',
-              label: '次の章',
-              text: '次の章'
-            }
-          },
-        ]
-      }
-    }
-  }
+const isPostback = (event: WebhookEvent) : event is PostbackEvent => {
+  return (<PostbackEvent>event).type === 'postback'
+}
+const isMessage = (event: WebhookEvent) : event is MessageEvent => {
+  return (<MessageEvent>event).type === 'message'
 }
 
 const router = Router()
 
 router.get('/', (request: Request, response: Response) => {
-  return response.send('Hello world.')
+  return response.send('Server is running .')
 })
 
 router.post('/', middleware, (request: Request, response: Response) => {
-  if(hasEvents(request)) {
-    request.body.events.forEach((event: EventBase) => {
-      if(isReplyable(event)) {
-        client.replyMessage(event.replyToken, generateMenuMessage())
-      }
-    });
-  }
+  if(!hasEvents(request)) return response.sendStatus(200)
+
+  request.body.events.forEach((event: WebhookEvent) => {
+    if(isReplyable(event)) {
+      logger.debug(`Requested user is ${event.source.userId} .`)
+      Database.getUser({
+        table: 'user',
+        lineUserId: event.source.userId
+      }).then((user: User) => {
+        if(isPostback(event)) {
+          client.replyMessage(event.replyToken, generateGeneralMenu())
+        }
+        else if(isMessage(event)) {
+          client.replyMessage(event.replyToken, generateGeneralMenu())
+        }
+      })
+    }
+  })
 
   return response.sendStatus(200)
 })

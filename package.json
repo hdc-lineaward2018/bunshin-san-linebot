@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "npm run build",
+    "prestart": "npm run build",
     "start": "npm run serve",
     "serve": "node ./dist/index.js",
     "build": "webpack"
