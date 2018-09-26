@@ -1,6 +1,36 @@
 import { FlexMessage } from "@line/bot-sdk";
 import { User } from "./models";
 
+export const generateErrorMessage = (error: Error) : FlexMessage => {
+  return {
+    type: 'flex',
+    altText: 'エラーが発生しました',
+    contents: {
+      type: 'bubble',
+      header: {
+        type: 'box',
+        layout: 'vertical',
+        contents: [
+          {
+            type: 'text',
+            text: 'エラーが発生しました'
+          }
+        ]
+      },
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        contents: [
+          {
+            type: 'text',
+            text: error.message
+          }
+        ]
+      }
+    }
+  }
+}
+
 export const generateGeneralMenu = (state?: User) : FlexMessage => {
   return {
     type: 'flex',

@@ -1,7 +1,7 @@
 import { User, Book, Section, Talk } from './models'
 
 export interface DatabaseRequest {
-  table: 'user' | 'book' | 'section' | 'talk'
+  searchTarget: 'user' | 'book' | 'section' | 'talk'
 }
 
 export interface CreateRecordsRequest extends DatabaseRequest {
@@ -9,26 +9,30 @@ export interface CreateRecordsRequest extends DatabaseRequest {
 }
 
 export interface CreateUsersRequest extends CreateRecordsRequest {
-  table: 'user',
+  searchTarget: 'user'
   records: User[]
 }
 
 export interface CreateBooksRequest extends CreateRecordsRequest {
-  table: 'book',
+  searchTarget: 'book'
   records: Book[]
 }
 
 export interface CreateSectionsRequest extends CreateRecordsRequest {
-  table: 'section',
+  searchTarget: 'section'
   records: Section[]
 }
 
 export interface CreateTalksRequest extends CreateRecordsRequest {
-  table: 'talk',
+  searchTarget: 'talk'
   records: Talk[]
 }
 
-export interface GetUserRequest extends DatabaseRequest {
-  table: 'user'
+export interface GetParams {
+  [key: string] : string | string[]
+}
+
+export interface GetUserRequest extends GetParams, DatabaseRequest {
+  searchTarget: 'user'
   lineUserId: string
 }

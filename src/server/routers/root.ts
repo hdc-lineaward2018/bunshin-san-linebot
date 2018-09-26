@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express'
 import { EventBase, WebhookEvent, ReplyableEvent, PostbackEvent, MessageEvent } from '@line/bot-sdk'
-import { generateGeneralMenu } from '../bunshin-san/messages'
+import { generateGeneralMenu, generateErrorMessage } from '../bunshin-san/messages'
 import client from '../linebot/client'
 import middleware from '../linebot/middleware'
 import logger from '../logger'
@@ -29,21 +29,28 @@ router.get('/', (request: Request, response: Response) => {
 router.post('/', middleware, (request: Request, response: Response) => {
   if(!hasEvents(request)) return response.sendStatus(200)
 
-  request.body.events.forEach((event: WebhookEvent) => {
+  Promise.all(request.body.events.map((event: WebhookEvent) : Promise<any> => {
     if(isReplyable(event)) {
       logger.debug(`Requested user is ${event.source.userId} .`)
-      Database.getUser({
-        table: 'user',
+
+      return Database.getUser({
+        searchTarget: 'user',
         lineUserId: event.source.userId
-      }).then((user: User) => {
+      }).then((user: User) : Promise<any> => {
         if(isPostback(event)) {
-          client.replyMessage(event.replyToken, generateGeneralMenu())
+          return client.replyMessage(event.replyToken, generateGeneralMenu(user))
         }
         else if(isMessage(event)) {
-          client.replyMessage(event.replyToken, generateGeneralMenu())
+          return client.replyMessage(event.replyToken, generateGeneralMenu(user))
         }
+      }).catch((error: Error) => {
+        return Promise.reject(error)
       })
     }
+  })).then((results: any[]) => {
+    logger.info(`Succeed to respond ${results.length} events .`)
+  }).catch((error: Error) => {
+    logger.error(`Raise ${error.name}: ${error.stack}`)
   })
 
   return response.sendStatus(200)
