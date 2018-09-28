@@ -3,7 +3,7 @@ import { request, RequestOptions } from 'https'
 import { URLSearchParams, parse } from 'url'
 import { HTTPError } from '@line/bot-sdk'
 import { GetUserRequest, GetParams } from './requests'
-import Response, { GetUserResponse, ErrorResponse } from './response'
+import Response, { GetUserResponse, ErrorResponse } from './responses'
 import { User, Book, Section, Talk } from './models'
 import { DatabaseError } from './errors'
 import config from '../config/database.config'
@@ -62,7 +62,7 @@ export default class Database {
 
       req.on('error', (error: Error) : void => reject(error))
 
-      if(data) req.write(JSON.stringify(data), (error: Error) => reject(error))
+      if(data) req.write(JSON.stringify(data), (error: Error): void => reject(error))
 
       req.end(() => logger.debug(`Finish sending request to ${config.hostname}.`))
     })

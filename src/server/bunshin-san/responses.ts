@@ -1,5 +1,4 @@
-import { User, Book, Section, Talk } from '../bunshin-san/models'
-import { FlexCarousel } from '@line/bot-sdk';
+import { User, Book, Section, Talk } from './models'
 
 export default interface Response {
   param: any

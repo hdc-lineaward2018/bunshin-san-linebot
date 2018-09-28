@@ -1,5 +1,5 @@
-import { FlexMessage } from "@line/bot-sdk";
-import { User } from "./models";
+import { FlexMessage } from '@line/bot-sdk'
+import { User } from './models'
 
 export const generateErrorMessage = (error: Error) : FlexMessage => {
   return {

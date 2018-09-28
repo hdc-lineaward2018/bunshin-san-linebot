@@ -1,4 +1,4 @@
-import { ErrorResponse } from "./response";
+import { ErrorResponse } from './responses'
 
 export class DatabaseError extends Error {
   constructor(response: ErrorResponse) {
