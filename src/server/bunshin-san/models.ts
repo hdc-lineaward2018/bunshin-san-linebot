@@ -1,47 +1,39 @@
 /**
  * Base of models
  */
-export interface Record {
-  id: number,
-  lineUserId: string,
-  //createdAt: string,
-  //updatedAt: string
+export interface Model {
+  lineuserid: string
 }
 
 /**
  * User model
  */
-export interface User extends Record {
-  currentBookId: number,
-  currentSectionId: number,
-  editBookId: number,
-  editSectionId: number,
+export interface User extends Model {
   name: string
+  currentbookid?: string
+  editbookid?: string
 }
 
 /**
  * Book model
  */
-export interface Book extends Record {
-  name: string,
-  readable: boolean
+export interface Book extends Model {
+  bookid?: string
+  name?: string
+  talklist?: Talk[]
 }
 
 /**
- * Section model
+ * AWS DynamoDB List item
  */
-export interface Section extends Record {
-  bookId: number,
-  sequence: number,
-  name: string,
-  readable: boolean
+export interface DynamoDBListItem {
+  S?: string
+  BOOL?: boolean
+  N?: number
+  B?: string
 }
 
 /**
  * Talk model
  */
-export interface Talk extends Record {
-  bookId: number,
-  sectionId: number,
-  text: string
-}
+export interface Talk extends DynamoDBListItem {}

@@ -1,102 +1,59 @@
-import { IncomingMessage } from 'http'
-import { request, RequestOptions } from 'https'
-import { URLSearchParams, parse } from 'url'
-import { HTTPError } from '@line/bot-sdk'
-import { GetUserRequest, GetParams } from './requests'
-import Response, { GetUserResponse, ErrorResponse } from './responses'
-import { User, Book, Section, Talk } from './models'
-import { DatabaseError } from './errors'
+import Response, { GetUserResponse, GetBookResponse, CreateUserResponse } from './responses'
+import { User, Book, Talk } from './models'
+import HTTP from '../http'
 import config from '../config/database.config'
-import logger from '../logger'
 
 export default class Database {
-  static buildURLParams(params: GetParams) : string {
-    return new URLSearchParams(params).toString()
-  }
-
-  static async request(data?: any, options?: RequestOptions) : Promise<Response> {
-    return new Promise((resolve: (value: Response) => void, reject: (reason: Error) => void) : void => {
-      const opt: RequestOptions = Object.assign({}, config, options)
-      const req = request(opt, (response: IncomingMessage) : void => {
-        logger.debug(`Response status ${response.statusCode}`)
-
-        // resume receiving response if error
-        if(response.statusCode >= 400) {
-          response.resume()
-          reject(new HTTPError('Raise error while sending request to database', response.statusCode, response.statusMessage, null))
-          return
-        }
-
-        // redirect
-        if(response.statusCode === 302) {
-          this.request(null, parse(response.headers.location)).then((res: Response) => {
-            resolve(res)
-          }).catch((reason: Error) => {
-            reject(reason)
-          })
-          return
-        }
-
-        let data = ''
-
-        // receive response body stream
-        response.on('data', (chunkedData: string) : void => {
-          data += chunkedData
-        })
-
-        // complete to recive response body
-        response.on('end', () : void => {
-          logger.debug(`DB Response ended .`)
-          logger.debug(`Responsed data: ${data}`)
-          try {
-            resolve(<Response>JSON.parse(data))
-          }
-          catch(error) {
-            reject(error)
-          }
-        })
-
-        // handle error
-        response.on('error', (error: Error) : void => reject(error))
-      })
-
-      req.on('error', (error: Error) : void => reject(error))
-
-      if(data) req.write(JSON.stringify(data), (error: Error): void => reject(error))
-
-      req.end(() => logger.debug(`Finish sending request to ${config.hostname}.`))
+  static async getUser(lineuserid: string) : Promise<User> {
+    const path = `${config.path}/users/${lineuserid}`
+    const opt = Object.assign({}, config, {path})
+    return HTTP.get(opt).then((response: Response) => {
+      const items = (<GetUserResponse>response).Items
+      return Promise.resolve(items && items.length > 0 ? items[0] : null)
     })
   }
 
-  static async get(data?: GetParams, options?: RequestOptions) : Promise<Response> {
-    const query = this.buildURLParams(data)
-    const opt = Object.assign({}, options, {method: 'GET', query})
-    return this.request(null, opt)
-  }
-
-  static async post(data?: any, options?: RequestOptions) : Promise<Response> {
-    const opt = Object.assign({}, options, {method: 'POST'})
-    return this.request(data, opt)
-  }
-
-  static async getUser(params: GetUserRequest) : Promise<User> {
-    return this.get(params).then((data: Response) => {
-      return new Promise((resolve: (value: User) => void, reject: (reason: Error) => void) : void => {
-        if(data.success) {
-          resolve((<GetUserResponse>data).result)
-        }
-        else {
-          reject(new DatabaseError(<ErrorResponse>data))
-        }
-      })
+  static async getBooks(lineuserid: string) : Promise<Book[]> {
+    const path = `${config.path}/users/${lineuserid}/books`
+    const opt = Object.assign({}, config, {path})
+    return HTTP.get(opt).then((response: Response) => {
+      return Promise.resolve((<GetBookResponse>response).Items)
     })
   }
 
-  //static async createUser(params: CreateUsers) : Promise<User[]> {}
+  static async getBook(lineuserid: string, bookid: string) : Promise<Book> {
+    const path = `${config.path}/users/${lineuserid}/books/${bookid}`
+    const opt = Object.assign({}, config, {path})
+    return HTTP.get(opt).then((response: Response) => {
+      return Promise.resolve((<GetBookResponse>response).Items[0])
+    })
+  }
 
-  //static async createBooks(params: CreateBooks) : Promise<Book[]> {}
+  static async getTalks(lineuserid: string, bookid: string) : Promise<Talk[]> {
+    const path = `${config.path}/users/${lineuserid}/books/${bookid}/talks`
+    const opt = Object.assign({}, config, {path})
+    return HTTP.get(opt).then((response: Response) => {
+      return Promise.resolve((<GetBookResponse>response).Items[0].talklist)
+    })
+  }
 
-  //static async createSections(params: CreateSections) : Promise<Section[]> {}
+  static async createUser(user: User) : Promise<User> {
+    const path = `${config.path}/users`
+    const opt = Object.assign({}, config, {path})
+    return HTTP.post(opt, user).then((response: Response) => {
+      return Promise.resolve((<CreateUserResponse>response).User)
+    })
+  }
 
-  //static async createTalks(params: CreateTalks) : Promise<Talk[]> {}
+  static async createBook(lineuserid: string, book: Book) : Promise<Response> {
+    const path = `${config.path}/users/${lineuserid}/books`
+    const opt = Object.assign({}, config, {path})
+    return HTTP.post(opt, book)
+  }
+
+  static async createTalks(lineuserid: string, bookid: string, talklist: Talk[]) : Promise<Response> {
+    const path = `${config.path}/users/${lineuserid}/books/${bookid}/talks`
+    const opt = Object.assign({}, config, {path})
+    return HTTP.post(opt, {talklist})
+  }
 }

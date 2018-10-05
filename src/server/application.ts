@@ -15,14 +15,13 @@ app.use(errorHandler)
 
 app.listen(port, () => {
   logger.info(`Application server listening on port ${port} !`)
-  logger.debug(`Mode - ${process.env.NODE_ENV}`)
+  logger.debug(`Mode: ${process.env.NODE_ENV}`)
 
   if(modeIsDev) {
     connect(Object.assign({addr: port}, config)).then((url: string) => {
       logger.info(`Connecting to ngrok on ${url} !`)
     }).catch((error: Error) => {
-      logger.error(`Raise ${error.name} connecting to ngrok .`)
-      logger.error(`${error.message}`)
+      logger.error(`Raise ${error.name} connecting to ngrok: ${error.stack}`)
     })
   }
 })
