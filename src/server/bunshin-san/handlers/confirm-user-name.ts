@@ -1,4 +1,4 @@
-import { FlexMessage, MessageEvent, TextMessage } from '@line/bot-sdk'
+import { FlexMessage } from '@line/bot-sdk'
 import EventHandler from './event-handler'
 import { SubmitUserNameCommand, AskUserNameCommand } from '../commands'
 

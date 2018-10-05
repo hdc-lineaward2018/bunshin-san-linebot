@@ -2,14 +2,14 @@
  * Base of models
  */
 export interface Model {
+  lineuserid?: string
 }
 
 /**
  * User model
  */
 export interface User extends Model {
-  lineuserid: string
-  name: string
+  name?: string
   currentbookid?: string
   editbookid?: string
 }
@@ -18,7 +18,6 @@ export interface User extends Model {
  * Book model
  */
 export interface Book extends Model {
-  lineuserid?: string
   bookid?: string
   name?: string
   talklist?: Talk[]

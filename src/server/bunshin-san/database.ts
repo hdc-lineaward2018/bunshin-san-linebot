@@ -56,4 +56,12 @@ export default class Database {
     const opt = Object.assign({}, config, {path})
     return HTTP.post(opt, {talklist})
   }
+
+  static async updateUser(lineuserid: string, user: User) : Promise<User> {
+    const path = `${config.path}/users/${lineuserid}`
+    const opt = Object.assign({}, config, {path})
+    return HTTP.post(opt, user).then((response: Response) => {
+      return Promise.resolve((<CreateUserResponse>response).User)
+    })
+  }
 }
