@@ -29,9 +29,7 @@ export default class CreateNewBook extends EventHandler {
    * @override from EventHandler
    */
   reply() {
-    return Database.createBook(this.eventUserId, {
-      lineuserid: this.eventUserId
-    }).then((book: Book) => {
+    return Database.createBook(this.eventUserId).then((book: Book) => {
       this.book = book
       return client.replyMessage(this.event.replyToken, this.message)
     })

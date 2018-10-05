@@ -45,7 +45,7 @@ export default class Database {
     })
   }
 
-  static async createBook(lineuserid: string, book: Book) : Promise<Response> {
+  static async createBook(lineuserid: string, book?: Book) : Promise<Response> {
     const path = `${config.path}/users/${lineuserid}/books`
     const opt = Object.assign({}, config, {path})
     return HTTP.post(opt, book)
