@@ -1,4 +1,5 @@
 # bunshin-san-linebot
+
 This is LINE bot server which is a part of Bunshin-san.
 
 ## Getting Started
@@ -21,11 +22,19 @@ $ npm install
 ```sh
 $ cd bunshin-san-linebot
 
-$ npm start
+# for production
+$ LINE_ACCESS_TOKEN=<YOUR ACCESS TOKEN> LINE_CHANNEL_SECRET=<YOUR SECRET KEY> DATABASE_ENDPOINT=<Server address of bunshin-san-database> NODE_ENV=production npm start
+
+# for development
+$ LINE_ACCESS_TOKEN=<YOUR ACCESS TOKEN> LINE_CHANNEL_SECRET=<YOUR SECRET KEY> DATABASE_ENDPOINT=<Server address of bunshin-san-database> NGROK_AUTHTOKEN=<YOUR NGROK AUTH TOKEN> NODE_ENV=development npm run start:dev
 ```
 
 ## API Overview
 
-### Endpoint
+### `/` GET
 
-Send HTTP POST request to `/`.
+Show index page.
+
+### `/` POST
+
+Webhook URL of LINE bot.
