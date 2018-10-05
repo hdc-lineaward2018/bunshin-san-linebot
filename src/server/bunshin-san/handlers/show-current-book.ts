@@ -1,7 +1,7 @@
 import { FlexMessage, FlexText } from '@line/bot-sdk'
 import EventHandler from './event-handler'
 import Database from '../database'
-import { Book, Talk } from '../models'
+import { Book } from '../models'
 import client from '../../linebot/client'
 
 export default class ShowCurrentBook extends EventHandler {
@@ -36,10 +36,10 @@ export default class ShowCurrentBook extends EventHandler {
         body: {
           type: 'box',
           layout: 'vertical',
-          contents: this.book.talklist.map((talk: Talk) : FlexText => {
+          contents: this.book.talklist.map((talk: string) : FlexText => {
             return {
               type: 'text',
-              text: talk.S,
+              text: talk,
               wrap: true
             }
           })

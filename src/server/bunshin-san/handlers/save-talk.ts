@@ -78,7 +78,7 @@ export default class SaveTalk extends EventHandler {
       this.user.lineuserid,
       this.user.editbookid,
       [
-        {'S': this.eventMessageText}
+        this.eventMessageText
       ]
     ).then(() => {
       return client.replyMessage(this.event.replyToken, this.message)

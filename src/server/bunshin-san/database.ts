@@ -1,5 +1,5 @@
 import Response, { GetUserResponse, GetBookResponse, CreateUserResponse } from './responses'
-import { User, Book, Talk } from './models'
+import { User, Book } from './models'
 import HTTP from '../http'
 import config from '../config/database.config'
 
@@ -29,7 +29,7 @@ export default class Database {
     })
   }
 
-  static async getTalks(lineuserid: string, bookid: string) : Promise<Talk[]> {
+  static async getTalks(lineuserid: string, bookid: string) : Promise<string[]> {
     const path = `${config.path}/users/${lineuserid}/books/${bookid}/talks`
     const opt = Object.assign({}, config, {path})
     return HTTP.get(opt).then((response: Response) => {
@@ -51,7 +51,7 @@ export default class Database {
     return HTTP.post(opt, book)
   }
 
-  static async createTalks(lineuserid: string, bookid: string, talklist: Talk[]) : Promise<Response> {
+  static async createTalks(lineuserid: string, bookid: string, talklist: string[]) : Promise<Response> {
     const path = `${config.path}/users/${lineuserid}/books/${bookid}/talks`
     const opt = Object.assign({}, config, {path})
     return HTTP.post(opt, {talklist})

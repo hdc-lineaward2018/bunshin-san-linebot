@@ -20,20 +20,5 @@ export interface User extends Model {
 export interface Book extends Model {
   bookid?: string
   name?: string
-  talklist?: Talk[]
+  talklist?: string[]
 }
-
-/**
- * AWS DynamoDB List item
- */
-export interface DynamoDBListItem {
-  S?: string
-  BOOL?: boolean
-  N?: number
-  B?: string
-}
-
-/**
- * Talk model
- */
-export interface Talk extends DynamoDBListItem {}
