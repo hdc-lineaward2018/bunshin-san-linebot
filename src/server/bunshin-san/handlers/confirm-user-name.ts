@@ -24,7 +24,8 @@ export default class ConfirmUserName extends EventHandler {
    * @override from EventHandler
    */
   get isReplyable() : boolean {
-    return !this.hasInternalUser && this.isMessageEvent()
+    return !this.hasInternalUser && this.isMessageEvent(this.event) &&
+      this.isTextMessage(this.event.message)
   }
 
   /**

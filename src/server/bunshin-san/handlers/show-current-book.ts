@@ -1,4 +1,4 @@
-import { FlexMessage, TextMessage } from '@line/bot-sdk'
+import { FlexMessage, FlexText } from '@line/bot-sdk'
 import EventHandler from './event-handler'
 import Database from '../database'
 import { Book, Talk } from '../models'
@@ -36,10 +36,11 @@ export default class ShowCurrentBook extends EventHandler {
         body: {
           type: 'box',
           layout: 'vertical',
-          contents: this.book.talklist.map((talk: Talk) : TextMessage => {
+          contents: this.book.talklist.map((talk: Talk) : FlexText => {
             return {
               type: 'text',
-              text: talk.S
+              text: talk.S,
+              wrap: true
             }
           })
         }
