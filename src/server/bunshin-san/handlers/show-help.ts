@@ -6,7 +6,7 @@ export default class ShowHelp extends EventHandler {
    * @override from EventHandler
    */
   get isReplyable() {
-    return this.event.type === 'message' && /help|ヘルプ|たすけて|助けて/.test(this.eventMessageText)
+    return this.isMessageEvent() && /help|ヘルプ|たすけて|助けて/.test(this.eventMessageText)
   }
 
   /**

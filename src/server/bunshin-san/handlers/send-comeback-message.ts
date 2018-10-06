@@ -1,14 +1,12 @@
 import { TextMessage } from '@line/bot-sdk'
 import EventHandler from './event-handler'
 
-export default class AskUserName extends EventHandler {
+export default class SendComebackMessage extends EventHandler {
   /**
    * @override from EventHandler
    */
   get isReplyable() : boolean {
-    return !this.hasInternalUser && (
-      this.isFollowEvent() || this.isCommandType('askUserName')
-    )
+    return this.hasInternalUser && this.isFollowEvent()
   }
 
   /**
@@ -17,7 +15,7 @@ export default class AskUserName extends EventHandler {
   get message() : TextMessage {
     const message: TextMessage = {
       type: 'text',
-      text: '殿、お初にお目にかかるでござる！　お名前を伺いたいでござる！'
+      text: `${this.internalUserName}殿、お待ちしていたでござるよ……！`
     }
     return message
   }

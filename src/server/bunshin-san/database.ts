@@ -1,4 +1,4 @@
-import Response, { GetUserResponse, GetBookResponse, CreateUserResponse } from './responses'
+import Response, { GetUserResponse, GetBookResponse, CreateUserResponse, CreateBookResponse } from './responses'
 import { User, Book } from './models'
 import HTTP from '../http'
 import config from '../config/database.config'
@@ -48,7 +48,9 @@ export default class Database {
   static async createBook(lineuserid: string, book?: Book) : Promise<Response> {
     const path = `${config.path}/users/${lineuserid}/books`
     const opt = Object.assign({}, config, {path})
-    return HTTP.post(opt, book)
+    return HTTP.post(opt, book).then((response: Response) => {
+      return Promise.resolve((<CreateBookResponse>response).Book)
+    })
   }
 
   static async createTalks(lineuserid: string, bookid: string, talklist: string[]) : Promise<Response> {

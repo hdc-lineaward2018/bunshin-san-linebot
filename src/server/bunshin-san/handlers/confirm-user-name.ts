@@ -50,7 +50,7 @@ export default class ConfirmUserName extends EventHandler {
         },
         footer: {
           type: 'box',
-          layout: 'vertical',
+          layout: 'horizontal',
           contents: [
             {
               type: 'button',

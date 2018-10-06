@@ -1,27 +1,20 @@
 import { IncomingMessage } from 'http'
 import { RequestOptions, request } from 'https'
 import { URLSearchParams, parse } from 'url'
-import { HTTPError } from '@line/bot-sdk'
 import logger from './logger'
+import HTTPError from './errors/http-error'
 
 export default class HTTP {
-  static async request(options: RequestOptions, data?: any) : Promise<Response> {
-    return new Promise((resolve: (value: Response) => void, reject: (reason: Error) => void) : void => {
+  static async request(options: RequestOptions, data?: any) : Promise<any> {
+    return new Promise((resolve: (value: any) => void, reject: (reason: Error) => void) : void => {
       logger.debug(`Request detail: ${JSON.stringify(options)}`)
 
       const req = request(options, (response: IncomingMessage) : void => {
         logger.debug(`Response status ${response.statusCode}`)
 
-        // resume receiving response if error
-        if(response.statusCode >= 400) {
-          response.resume()
-          reject(new HTTPError('Raise error while sending request to database', response.statusCode, response.statusMessage, null))
-          return
-        }
-
         // redirect
         if(response.statusCode === 302) {
-          this.request(parse(response.headers.location)).then((res: Response) => {
+          this.request(parse(response.headers.location)).then((res: any) => {
             resolve(res)
           }).catch((reason: Error) => {
             reject(reason)
@@ -40,11 +33,20 @@ export default class HTTP {
         response.on('end', () : void => {
           logger.debug(`Database Response ended .`)
           logger.debug(`Responsed data: ${data}`)
+
+          let parsedData
           try {
-            resolve(data ? <Response>JSON.parse(data) : null)
+            parsedData = data ? JSON.parse(data) : null
           }
           catch(error) {
             reject(error)
+          }
+
+          if(response.statusCode >= 400) {
+            reject(new HTTPError('Raise error while sending request to database', parsedData))
+          }
+          else {
+            resolve(parsedData)
           }
         })
 
@@ -64,14 +66,14 @@ export default class HTTP {
     })
   }
 
-  static async get(options: RequestOptions, data?: URLParams) : Promise<Response> {
+  static async get(options: RequestOptions, data?: URLParams) : Promise<any> {
     const params = data ? '?' + new URLSearchParams(data).toString() : ''
     const path = options.path ? `${options.path}${params}` : params
     const opt = Object.assign({}, options, {method: 'GET', path})
     return this.request(opt)
   }
 
-  static async post(options: RequestOptions, data?: any) : Promise<Response> {
+  static async post(options: RequestOptions, data?: any) : Promise<any> {
     const opt = Object.assign({}, options, {method: 'POST'})
     return this.request(opt, data)
   }

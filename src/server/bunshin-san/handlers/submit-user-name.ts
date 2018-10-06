@@ -4,6 +4,7 @@ import Command, { SubmitUserNameCommand } from '../commands'
 import Database from '../database'
 import client from '../../linebot/client'
 import { User } from '../models'
+import logger from '../../logger'
 
 export default class SubmitUserName extends EventHandler {
   private get command() : Command {
@@ -15,7 +16,10 @@ export default class SubmitUserName extends EventHandler {
   }
 
   private get text() : string {
-    return `${this.internalUserName}殿で源氏名を登録したでござる！`
+    return `${this.internalUserName}殿で名前を登録したでござる！
+
+  殿の言葉を覚えて代わりに話すでござる！
+  覚えさせたい言葉を伺ってもよいでござるか？`
   }
 
   /**
@@ -45,6 +49,7 @@ export default class SubmitUserName extends EventHandler {
       lineuserid: this.event.source.userId,
       name: this.name
     }).then((user: User) : Promise<any> => {
+      logger.debug(user)
       this.user = user
       return client.replyMessage(this.event.replyToken, this.message)
     })

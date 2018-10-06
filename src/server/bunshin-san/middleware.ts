@@ -6,6 +6,8 @@ import EventHandler from './handlers/event-handler'
 import generateHandlers from './handlers/generate-handlers'
 import logger from '../logger'
 import WrappedError from '../errors/wrapped-error'
+import HTTPError from '../errors/http-error'
+import { ErrorResponse } from './responses'
 
 export const hasEvents = (request: Request) : boolean => {
   return request.body && request.body.events && request.body.events.length > 0
@@ -38,15 +40,17 @@ export default (request: Request, response: Response) => {
         logger.debug(`Execute ${handler.constructor.name}Handler .`)
 
         return handler.reply().catch((error: WrappedError) => {
-          if(!error) return Promise.reject()
-
-          if(error.originalError) {
+          if(error instanceof HTTPError) {
+            logger.error(`Raise ${error.name}: ${JSON.stringify(<ErrorResponse>error.response)}`)
+          }
+          else if(error.originalError) {
             logger.error(`Raise ${error.originalError.name}: ${error.originalError.stack}`)
             logger.error(`OriginalError message: ${error.originalError.response.data.massage}`)
           }
           else {
             logger.error(`Raise ${error.name}: ${error.stack}`)
           }
+
           return Promise.reject(error)
         })
       }))

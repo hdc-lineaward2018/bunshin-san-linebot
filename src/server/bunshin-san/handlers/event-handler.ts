@@ -49,7 +49,7 @@ export default abstract class EventHandler {
   }
 
   protected isCommandType(type: CommandTypes) : boolean {
-    return this.postbackCommand.type === type
+    return this.isPostbackEvent() && this.postbackCommand.type === type
   }
 
   protected get hasInternalUser() : boolean {

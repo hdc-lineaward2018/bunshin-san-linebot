@@ -1,4 +1,4 @@
-import { FlexMessage, FlexText } from '@line/bot-sdk'
+import { FlexMessage, FlexText, FlexBubble } from '@line/bot-sdk'
 import EventHandler from './event-handler'
 import Database from '../database'
 import { Book } from '../models'
@@ -32,20 +32,36 @@ export default class ShowCurrentBook extends EventHandler {
               text: '現在の巻物'
             }
           ]
-        },
-        body: {
-          type: 'box',
-          layout: 'vertical',
-          contents: this.book.talklist.map((talk: string) : FlexText => {
-            return {
-              type: 'text',
-              text: talk,
-              wrap: true
-            }
-          })
         }
       }
     }
+
+    if(this.book.talklist && this.book.talklist.length > 0) {
+      (<FlexBubble>message.contents).body = {
+        type: 'box',
+        layout: 'vertical',
+        contents: this.book.talklist.map((talk: string) : FlexText => {
+          return {
+            type: 'text',
+            text: talk,
+            wrap: true
+          }
+        })
+      }
+    }
+    else {
+      (<FlexBubble>message.contents).body = {
+        type: 'box',
+        layout: 'vertical',
+        contents: [
+          {
+            type: 'text',
+            text: 'この巻物はまだ白紙でござる'
+          }
+        ]
+      }
+    }
+
     return message
   }
 

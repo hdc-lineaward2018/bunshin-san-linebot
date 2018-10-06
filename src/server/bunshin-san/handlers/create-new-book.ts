@@ -3,6 +3,7 @@ import EventHandler from './event-handler'
 import Database from '../database'
 import { Book, User } from '../models'
 import client from '../../linebot/client'
+import logger from '../../logger'
 
 export default class CreateNewBook extends EventHandler {
   private book: Book
@@ -30,12 +31,14 @@ export default class CreateNewBook extends EventHandler {
    */
   reply() {
     return Database.createBook(this.eventUserId).then((book: Book) => {
+      logger.debug(book)
       this.book = book
       return Database.updateUser(this.eventUserId, {
         currentbookid: book.bookid,
         editbookid: book.bookid
       })
     }).then((user: User) => {
+      logger.debug(user)
       this.user = user
       return client.replyMessage(this.event.replyToken, this.message)
     })

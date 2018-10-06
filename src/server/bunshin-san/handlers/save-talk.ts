@@ -39,6 +39,17 @@ export default class SaveTalk extends EventHandler {
             }
           ]
         },
+        body: {
+          type: 'box',
+          layout: 'vertical',
+          contents: [
+            {
+              type: 'text',
+              text: `「${this.eventMessageText}」を覚えたでござる！`,
+              wrap: true
+            }
+          ]
+        },
         footer: {
           type: 'box',
           layout: 'vertical',
@@ -50,8 +61,7 @@ export default class SaveTalk extends EventHandler {
                 label: '現在の巻物を見る',
                 displayText: '現在の巻物を見る',
                 data: JSON.stringify(this.showCurrentBookCommand)
-              },
-              style: 'primary'
+              }
             },
             {
               type: 'button',
@@ -60,8 +70,7 @@ export default class SaveTalk extends EventHandler {
                 label: '新しい巻物',
                 displayText: '新しい巻物',
                 data: JSON.stringify(this.newBookCommand)
-              },
-              style: 'primary'
+              }
             }
           ]
         }
