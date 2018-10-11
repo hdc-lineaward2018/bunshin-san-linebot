@@ -44,6 +44,7 @@ export default class ConfirmUserName extends EventHandler {
             {
               type: 'text',
               text: this.text,
+              size: 'sm',
               wrap: true
             }
           ]
@@ -70,7 +71,8 @@ export default class ConfirmUserName extends EventHandler {
                 displayText: 'いいえ',
                 data: JSON.stringify(this.noCommand)
               },
-              style: 'secondary'
+              style: 'secondary',
+              margin: 'sm'
             }
           ]
         }

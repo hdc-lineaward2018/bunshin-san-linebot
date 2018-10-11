@@ -29,9 +29,18 @@ export default class ShowCurrentBook extends EventHandler {
           contents: [
             {
               type: 'text',
-              text: '現在の巻物'
+              text: '現在の巻物',
+              weight: 'bold'
             }
           ]
+        },
+        styles: {
+          header: {
+            backgroundColor: '#faf0e6'
+          },
+          body: {
+            backgroundColor: '#faf0e6'
+          }
         }
       }
     }
@@ -44,6 +53,7 @@ export default class ShowCurrentBook extends EventHandler {
           return {
             type: 'text',
             text: talk,
+            size: 'sm',
             wrap: true
           }
         })
@@ -56,7 +66,8 @@ export default class ShowCurrentBook extends EventHandler {
         contents: [
           {
             type: 'text',
-            text: 'この巻物はまだ白紙でござる'
+            text: 'この巻物はまだ白紙でござる',
+            size: 'sm'
           }
         ]
       }

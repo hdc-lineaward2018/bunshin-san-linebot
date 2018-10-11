@@ -18,8 +18,8 @@ export default class SubmitUserName extends EventHandler {
   private get text() : string {
     return `${this.internalUserName}殿で名前を登録したでござる！
 
-  殿の言葉を覚えて代わりに話すでござる！
-  覚えさせたい言葉を伺ってもよいでござるか？`
+殿の言葉を覚えて代わりに話すでござる！
+覚えさせたい言葉を伺ってもよいでござるか？`
   }
 
   /**

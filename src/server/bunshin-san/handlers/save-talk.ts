@@ -35,7 +35,9 @@ export default class SaveTalk extends EventHandler {
           contents: [
             {
               type: 'text',
-              text: '指令の書'
+              text: `「${this.eventMessageText}」を覚えたでござる！`,
+              size: 'sm',
+              wrap: true
             }
           ]
         },
@@ -45,8 +47,8 @@ export default class SaveTalk extends EventHandler {
           contents: [
             {
               type: 'text',
-              text: `「${this.eventMessageText}」を覚えたでござる！`,
-              wrap: true
+              text: '指令の書',
+              weight: 'bold'
             }
           ]
         },
@@ -56,23 +58,41 @@ export default class SaveTalk extends EventHandler {
           contents: [
             {
               type: 'button',
+              style: 'primary',
               action: {
                 type: 'postback',
                 label: '現在の巻物を見る',
                 displayText: '現在の巻物を見る',
                 data: JSON.stringify(this.showCurrentBookCommand)
-              }
+              },
+              color: '#556b2f'
             },
             {
               type: 'button',
+              style: 'primary',
               action: {
                 type: 'postback',
                 label: '新しい巻物',
                 displayText: '新しい巻物',
                 data: JSON.stringify(this.newBookCommand)
-              }
+              },
+              color: '#556b2f',
+              margin: 'sm'
             }
           ]
+        },
+        styles: {
+          header: {
+            backgroundColor: '#faf0e6'
+          },
+          body: {
+            backgroundColor: '#faf0e6',
+            separator: true,
+            separatorColor: '#deb887'
+          },
+          footer: {
+            backgroundColor: '#faf0e6'
+          }
         }
       }
     }
